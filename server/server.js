@@ -25,6 +25,7 @@ app.listen(3000, () => {
 	console.log('Started on port 3000');
 });
 
+module.exports = {app};
 
 //Create model in models folder, and save item into it
 
