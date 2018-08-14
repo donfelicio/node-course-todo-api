@@ -7,6 +7,7 @@ var {Todo} = require('./models/todo');
 var {User} = require('./models/user')
 
 var app = express();
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -46,20 +47,8 @@ app.get('/todos/:id', (req, res) => {
 
 });
 
-app.listen(3000, () => {
-	console.log('Started on port 3000');
+app.listen(port, () => {
+	console.log(`Started up on port ${port}`);
 });
 
 module.exports = {app};
-
-//Create model in models folder, and save item into it
-
-// var user = new User({
-// 	email: 'felix@donfelicio.com'
-// });
-
-// user.save().then((doc) => {
-// 	console.log('User created', doc)
-// },(e) => {
-// 	console.log('User could not be created', e)
-// });
