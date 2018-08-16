@@ -197,5 +197,4 @@ describe('PATCH /todos/:id', () => {
 		//update text (change), completed = false
 		//assert 200, body is change, completed = false, completedAt is null (.not.toBeTruthy())
 	});
-})
-
+});
