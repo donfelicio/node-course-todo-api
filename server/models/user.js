@@ -9,13 +9,13 @@ var UserSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 		minlength: 1,
-		trim: true, 
+		trim: true,
 		require: true,
 		unique: true,
 		validate: {
 			validator: (v) => {
 				validator: validator.isEmail
-			}, 	
+			},
 			message: props => `${props.value} is not a valid phone email!`
 		}
 	},
@@ -36,9 +36,9 @@ var UserSchema = new mongoose.Schema({
 	}]
 });
 
-//we are adding to the userSchema methods. 
-//We made this schema and use it in creating the model, 
-//since you can't add methods to the User model. 
+//we are adding to the userSchema methods.
+//We made this schema and use it in creating the model,
+//since you can't add methods to the User model.
 //we are using the old function because it uses 'this'
 UserSchema.methods.toJSON = function () {
 	var user = this;
@@ -50,10 +50,10 @@ UserSchema.methods.toJSON = function () {
 UserSchema.methods.generateAuthToken = function () {
 	var user = this;
 	var access = 'Auth';
-	var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
+	var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
 
 	user.tokens = user.tokens.concat([{access, token}]);
-	
+
 	return user.save().then(() => {
 		return token;
 	});
@@ -74,14 +74,14 @@ UserSchema.statics.findByToken = function (token) {
 	var decoded;
 
 	try {
-		decoded = jwt.verify(token, 'abc123');
+		decoded = jwt.verify(token, process.env.JWT_SECRET);
 	} catch (e) {
 		return Promise.reject();
 	}
 
 	return User.findOne({
 		'_id': decoded._id,
-		'tokens.token': token, 
+		'tokens.token': token,
 		'tokens.access': 'Auth'
 	});
 };
