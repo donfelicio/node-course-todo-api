@@ -40,6 +40,12 @@ var UserSchema = new mongoose.Schema({
 //We made this schema and use it in creating the model, 
 //since you can't add methods to the User model. 
 //we are using the old function because it uses 'this'
+UserSchema.methods.toJSON = function () {
+	var user = this;
+	var userObject = user.toObject();
+
+	return _.pick(userObject, ['_id', 'email']);
+};
 
 UserSchema.methods.generateAuthToken = function () {
 	var user = this;
@@ -50,6 +56,16 @@ UserSchema.methods.generateAuthToken = function () {
 	
 	return user.save().then(() => {
 		return token;
+	});
+};
+
+UserSchema.methods.removeToken = function (token) {
+	var user = this;
+
+	return user.update({
+		$pull: {
+			tokens: {token}
+		}
 	});
 };
 
@@ -105,13 +121,6 @@ UserSchema.pre('save', function (next) {
 		next();
 	}
 });
-
-UserSchema.methods.toJSON = function () {
-	var user = this;
-	var userObject = user.toObject();
-
-	return _.pick(userObject, ['_id', 'email']);
-};
 
 var User = mongoose.model('User', UserSchema);
 
